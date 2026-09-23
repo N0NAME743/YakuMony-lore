@@ -420,7 +420,12 @@
       <button id="up-signin" type="button" class="up-btn accent">Googleでログイン</button>
       <div id="up-form" hidden>
         <div class="up-group">
-          <p class="up-label">テキストで保存</p>
+          <p class="up-label">クリップボードからワンクリック保存</p>
+          <p class="card-body" style="margin:0 0 4px;">ChatGPT等の回答をコピーしてから押すだけ。貼り付け操作が不要になる。</p>
+          <button id="up-clipboard" type="button" class="up-btn accent">クリップボードから保存</button>
+        </div>
+        <div class="up-group">
+          <p class="up-label">テキストで保存(貼り付けて編集する場合)</p>
           <input id="up-filename" type="text" class="up-input" placeholder="ファイル名(例: 2026-09-23_仕様書.md)">
           <textarea id="up-content" class="up-input up-textarea" rows="8" placeholder="AIが作った仕様書・引き継ぎ資料などをここに貼り付け"></textarea>
           <button id="up-save" type="button" class="up-btn accent">テキストを保存</button>
@@ -465,7 +470,7 @@
   </section>
 
   <footer>
-    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応</span>
+    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応 / クリップボードからワンクリック保存に対応</span>
     <button id="copy-btn" type="button">このページのURLをコピー</button>
   </footer>
 
@@ -503,6 +508,7 @@
     var saveBtn = document.getElementById('up-save');
     var fileInput = document.getElementById('up-file');
     var fileSaveBtn = document.getElementById('up-file-save');
+    var clipboardBtn = document.getElementById('up-clipboard');
     var statusEl = document.getElementById('up-status');
     var messageEl = document.getElementById('up-message');
     if (!signinBtn) return;
@@ -523,14 +529,18 @@
       try { localStorage.setItem(FOLDER_STORAGE_KEY, id); } catch (e) { /* ignore */ }
     }
 
+    function defaultFilename() {
+      var d = new Date();
+      var pad = function (n) { return String(n).padStart(2, '0'); };
+      return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + '_資料.md';
+    }
+
     function onSignedIn() {
       statusEl.textContent = 'ログイン中';
       statusEl.hidden = false;
       signinBtn.hidden = true;
       form.hidden = false;
-      var d = new Date();
-      var pad = function (n) { return String(n).padStart(2, '0'); };
-      filenameInput.value = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + '_資料.md';
+      filenameInput.value = defaultFilename();
       setMessage('');
     }
 
@@ -637,6 +647,30 @@
         setMessage('保存に失敗しました: ' + (err && err.message ? err.message : err), true);
       } finally {
         fileSaveBtn.disabled = false;
+      }
+    });
+
+    clipboardBtn.addEventListener('click', async function () {
+      clipboardBtn.disabled = true;
+      try {
+        if (!navigator.clipboard || !navigator.clipboard.readText) {
+          throw new Error('このブラウザはクリップボードの自動読み込みに対応していません。下の欄に手動で貼り付けてください。');
+        }
+        var text = await navigator.clipboard.readText();
+        if (!text || !text.trim()) {
+          throw new Error('クリップボードが空です。先にコピーしてから押してください。');
+        }
+        var filename = filenameInput.value.trim() || defaultFilename();
+        setMessage('保存しています…');
+        await ensureFolder();
+        await uploadBlob(filename, 'text/plain; charset=UTF-8', new Blob([text], { type: 'text/plain' }));
+        contentInput.value = text;
+        filenameInput.value = defaultFilename();
+        setMessage('クリップボードの内容を「' + filename + '」として Outpost Uploads フォルダに保存しました。');
+      } catch (err) {
+        setMessage((err && err.message ? err.message : 'クリップボードの読み込みに失敗しました') , true);
+      } finally {
+        clipboardBtn.disabled = false;
       }
     });
   })();
