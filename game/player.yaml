@@ -1,0 +1,9 @@
+player:
+  name: KEN10
+  level: 1
+  exp: 0
+  exp_to_next: 100
+  class: Novice
+
+adventure:
+  started_at: "2026-09-24"

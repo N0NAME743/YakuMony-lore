@@ -1,0 +1,24 @@
+quests:
+  - id: quest_001
+    name: 冒険の書
+    description: YakuMony Skill Systemそのものを起動する。
+    difficulty: 1
+    status: active
+    objectives:
+      - text: Playerデータを作成
+        done: true
+      - text: Skillデータモデルを作成
+        done: true
+      - text: Questデータモデルを作成
+        done: true
+      - text: Achievementデータモデルを作成
+        done: true
+      - text: Web画面にKEN10を表示
+        done: true
+    rewards:
+      exp: 100
+      unlock:
+        - status
+        - skill_grid
+      title:
+        - 冒険者

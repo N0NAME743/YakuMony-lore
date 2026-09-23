@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YakuMony Skill System</title>
+<style>
+  :root {
+    --bg: #f5f6f3;
+    --surface: #ffffff;
+    --surface-2: #eef0ec;
+    --ink: #191d1b;
+    --ink-soft: #4b524d;
+    --muted: #767e78;
+    --border: #dde1da;
+    --accent: #2c6b62;
+    --accent-soft: #dcece8;
+    --accent-ink: #163f39;
+    --warn: #9a5b23;
+    --warn-soft: #f4e6d6;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14161a;
+      --surface: #1b1e22;
+      --surface-2: #21252a;
+      --ink: #eceeec;
+      --ink-soft: #b8bdb8;
+      --muted: #868d88;
+      --border: #2d3238;
+      --accent: #6fbdb0;
+      --accent-soft: #223330;
+      --accent-ink: #a9dcd2;
+      --warn: #d99a5c;
+      --warn-soft: #382b1c;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+  .mono {
+    font-family: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  .wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding-inline: 20px;
+    padding-block: 40px 72px;
+  }
+  header.masthead {
+    border-bottom: 1px solid var(--border);
+    padding-block-end: 24px;
+    margin-block-end: 32px;
+  }
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  h1 {
+    font-size: clamp(1.7rem, 5vw, 2.3rem);
+    font-weight: 700;
+    margin: 0 0 10px;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  .lede {
+    color: var(--ink-soft);
+    font-size: 1rem;
+    margin: 0 0 18px;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    padding: 5px 11px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--ink-soft);
+    background: var(--surface);
+  }
+  .pill.accent {
+    border-color: transparent;
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+  section.block { margin-block-end: 40px; }
+  .block-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-block-end: 14px;
+  }
+  .num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .block h2 { font-size: 1.15rem; font-weight: 700; margin: 0; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+  }
+  .stat-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 4px;
+  }
+  .stat-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .exp-bar-wrap { margin-top: 18px; }
+  .exp-bar-track {
+    height: 8px;
+    border-radius: 100px;
+    background: var(--surface-2);
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .exp-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 100px;
+    transition: width 0.4s ease;
+  }
+  .cards { display: grid; gap: 10px; }
+  .skill-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .skill-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .skill-title { font-weight: 700; font-size: 0.95rem; }
+  .skill-desc { color: var(--ink-soft); font-size: 0.85rem; margin-top: 4px; }
+  .badge {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.68rem;
+    padding: 2px 8px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+  .badge.unknown { color: var(--muted); background: var(--surface-2); }
+  .badge.discovered { color: var(--accent-ink); background: var(--accent-soft); }
+  .badge.learning { color: var(--warn); background: var(--warn-soft); }
+  .badge.unlocked { color: var(--accent-ink); background: var(--accent-soft); font-weight: 700; }
+  .badge.mastered { color: var(--accent-ink); background: var(--accent-soft); font-weight: 700; }
+  .quest-card { display: grid; gap: 12px; }
+  .quest-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .quest-title { font-size: 1.05rem; font-weight: 700; }
+  .obj-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+  .obj-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+  .obj-check { color: var(--accent); font-weight: 700; }
+  .obj-open { color: var(--muted); }
+  .reward-row {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8rem;
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 100px;
+    width: fit-content;
+  }
+  .grid-cta {
+    margin-top: 8px;
+  }
+  .up-btn {
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 100px;
+    padding: 9px 18px;
+    cursor: default;
+    color: var(--muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    opacity: 0.7;
+  }
+  .placeholder-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+  footer {
+    border-top: 1px solid var(--border);
+    padding-block-start: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  footer a { color: var(--accent); }
+  footer .log {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-family: "JetBrains Mono", monospace;
+  }
+  #load-state {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Real Life RPG — YakuMony Skill System</p>
+    <h1>YakuMony Skill System</h1>
+    <p class="lede">KEN10が現実世界で学習・構築・経験した能力を可視化する「現実世界のセーブデータ」。Design Spec v0.1 / Phase 1.</p>
+    <div class="meta-row">
+      <span class="pill accent">Phase 1</span>
+      <span class="pill">Design Spec v0.1</span>
+      <span class="pill"><a href="index.html" style="color:inherit; text-decoration:none;">← N0NAME Outpost</a></span>
+    </div>
+  </header>
+
+  <p id="load-state">読み込み中...</p>
+
+  <div id="content" hidden>
+
+    <section class="block" id="status">
+      <div class="block-head"><span class="num">01</span><h2>STATUS</h2></div>
+      <div class="card">
+        <div class="status-grid">
+          <div>
+            <p class="stat-label">Player</p>
+            <p class="stat-value" id="stat-name">—</p>
+          </div>
+          <div>
+            <p class="stat-label">Class</p>
+            <p class="stat-value" id="stat-class">—</p>
+          </div>
+          <div>
+            <p class="stat-label">Level</p>
+            <p class="stat-value" id="stat-level">—</p>
+          </div>
+          <div>
+            <p class="stat-label">Skills Discovered</p>
+            <p class="stat-value" id="stat-skills">—</p>
+          </div>
+        </div>
+        <div class="exp-bar-wrap">
+          <p class="stat-label">EXP <span id="stat-exp-text" class="mono"></span></p>
+          <div class="exp-bar-track"><div class="exp-bar-fill" id="exp-bar-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="quest">
+      <div class="block-head"><span class="num">02</span><h2>CURRENT QUEST</h2></div>
+      <div class="card quest-card" id="quest-card"></div>
+    </section>
+
+    <section class="block" id="skills">
+      <div class="block-head"><span class="num">03</span><h2>SKILLS</h2></div>
+      <div class="skill-grid" id="skill-grid"></div>
+      <div class="grid-cta">
+        <button class="up-btn" disabled>OPEN SKILL GRID</button>
+        <p class="placeholder-note">Skill Grid（依存関係の可視化）は Phase 2 で実装予定です。</p>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <span class="log">YakuMony Skill System — Phase 1 / <a href="index.html">N0NAME Outpost に戻る</a></span>
+  </footer>
+
+</div>
+
+<script src="vendor/js-yaml.min.js"></script>
+<script>
+  (function () {
+    var STATUS_LABEL = {
+      unknown: 'UNKNOWN',
+      discovered: 'DISCOVERED',
+      learning: 'LEARNING',
+      unlocked: 'UNLOCKED',
+      mastered: 'MASTERED'
+    };
+
+    function loadYaml(path) {
+      return fetch(path).then(function (res) {
+        if (!res.ok) throw new Error(path + ' の読み込みに失敗 (HTTP ' + res.status + ')');
+        return res.text();
+      }).then(function (text) {
+        return jsyaml.load(text);
+      });
+    }
+
+    function renderStatus(player, skills) {
+      document.getElementById('stat-name').textContent = player.player.name;
+      document.getElementById('stat-class').textContent = player.player.class;
+      document.getElementById('stat-level').textContent = player.player.level;
+      var discoveredCount = skills.skills.filter(function (s) { return s.status !== 'unknown'; }).length;
+      document.getElementById('stat-skills').textContent = discoveredCount + ' / ' + skills.skills.length;
+
+      var exp = player.player.exp;
+      var expNext = player.player.exp_to_next;
+      document.getElementById('stat-exp-text').textContent = exp + ' / ' + expNext;
+      var pct = expNext > 0 ? Math.min(100, Math.round((exp / expNext) * 100)) : 0;
+      document.getElementById('exp-bar-fill').style.width = pct + '%';
+    }
+
+    function renderQuest(quests) {
+      var active = quests.quests.find(function (q) { return q.status === 'active'; }) || quests.quests[0];
+      var card = document.getElementById('quest-card');
+      if (!active) {
+        card.innerHTML = '<p class="skill-desc">進行中のQuestはありません。</p>';
+        return;
+      }
+      var objectives = (active.objectives || []).map(function (o) {
+        var mark = o.done ? '<span class="obj-check">✓</span>' : '<span class="obj-open">○</span>';
+        return '<li>' + mark + '<span>' + o.text + '</span></li>';
+      }).join('');
+      var stars = '★'.repeat(active.difficulty) + '☆'.repeat(Math.max(0, 5 - active.difficulty));
+      card.innerHTML =
+        '<div class="quest-title-row">' +
+          '<span class="quest-title">QUEST ' + active.id.replace('quest_', '') + ' 《' + active.name + '》</span>' +
+          '<span class="mono" style="font-size:0.8rem; color:var(--muted);">' + stars + '</span>' +
+        '</div>' +
+        '<p class="skill-desc" style="margin:0;">' + active.description + '</p>' +
+        '<ul class="obj-list">' + objectives + '</ul>' +
+        '<span class="reward-row">+' + active.rewards.exp + ' EXP</span>';
+    }
+
+    function renderSkills(skills) {
+      var grid = document.getElementById('skill-grid');
+      grid.innerHTML = skills.skills.map(function (s) {
+        var badgeClass = s.status in STATUS_LABEL ? s.status : 'unknown';
+        return '<div class="skill-card">' +
+          '<div class="skill-head">' +
+            '<span class="skill-title">' + s.name + '</span>' +
+            '<span class="badge ' + badgeClass + '">' + STATUS_LABEL[badgeClass] + '</span>' +
+          '</div>' +
+          '<div class="skill-desc">' + s.description + '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    Promise.all([
+      loadYaml('game/player.yaml'),
+      loadYaml('game/skills.yaml'),
+      loadYaml('game/quests.yaml')
+    ]).then(function (results) {
+      var player = results[0], skills = results[1], quests = results[2];
+      renderStatus(player, skills);
+      renderQuest(quests);
+      renderSkills(skills);
+      document.getElementById('load-state').hidden = true;
+      document.getElementById('content').hidden = false;
+    }).catch(function (err) {
+      document.getElementById('load-state').textContent = '読み込みに失敗しました: ' + err.message;
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+skills:
+  - id: ai_basics
+    name: AI Basics
+    category: ai_llm
+    status: discovered
+    level: 0
+    max_level: 5
+    description: AI/LLMの基礎的な活用
+    requirements: []
+    evidence: []
+
+  - id: research
+    name: Research
+    category: research
+    status: discovered
+    level: 0
+    max_level: 5
+    description: 情報収集・裏取り・検証
+    requirements: []
+    evidence: []
+
+  - id: knowledge
+    name: Knowledge
+    category: knowledge
+    status: discovered
+    level: 0
+    max_level: 5
+    description: 知識の整理・蓄積・活用
+    requirements: []
+    evidence: []
+
+  - id: programming
+    name: Programming
+    category: programming
+    status: discovered
+    level: 0
+    max_level: 5
+    description: プログラミング・ソフトウェア開発
+    requirements: []
+    evidence: []
+
+  - id: automation
+    name: Automation
+    category: automation
+    status: discovered
+    level: 0
+    max_level: 5
+    description: 定型作業・処理の自動化
+    requirements: []
+    evidence: []
+
+  - id: infrastructure
+    name: Infrastructure
+    category: infrastructure
+    status: discovered
+    level: 0
+    max_level: 5
+    description: サーバー・インフラの構築と運用
+    requirements: []
+    evidence: []
+
+  - id: security
+    name: Security
+    category: security
+    status: discovered
+    level: 0
+    max_level: 5
+    description: セキュリティの知識と実践
+    requirements: []
+    evidence: []
+
+  - id: creative
+    name: Creative
+    category: creative
+    status: discovered
+    level: 0
+    max_level: 5
+    description: 創作・デザイン・表現
+    requirements: []
+    evidence: []
+
+  - id: data
+    name: Data
+    category: data
+    status: discovered
+    level: 0
+    max_level: 5
+    description: データの収集・分析・活用
+    requirements: []
+    evidence: []
+
+  - id: communication
+    name: Communication
+    category: communication
+    status: discovered
+    level: 0
+    max_level: 5
+    description: 対外的なコミュニケーション・発信
+    requirements: []
+    evidence: []
+
+  - id: strategy
+    name: Strategy / Decision
+    category: strategy
+    status: discovered
+    level: 0
+    max_level: 5
+    description: 戦略立案・意思決定
+    requirements: []
+    evidence: []
+
+  - id: agent
+    name: Agent / Autonomy
+    category: agent
+    status: discovered
+    level: 0
+    max_level: 5
+    description: AIエージェント・自律システムの構築と運用
+    requirements: []
+    evidence: []
