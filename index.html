@@ -229,6 +229,13 @@
     border-top: 1px solid var(--border);
   }
   .up-group:first-child { padding-top: 0; border-top: none; }
+  .up-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .up-row .up-textarea { flex: 1 1 100%; }
+  .up-btn:not(.accent) {
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+  }
   .up-label {
     font-family: "JetBrains Mono", monospace;
     font-size: 0.72rem;
@@ -420,15 +427,16 @@
       <button id="up-signin" type="button" class="up-btn accent">Googleでログイン</button>
       <div id="up-form" hidden>
         <div class="up-group">
-          <p class="up-label">クリップボードからワンクリック保存</p>
-          <p class="card-body" style="margin:0 0 4px;">ChatGPT等の回答をコピーしてから押すだけ。貼り付け操作が不要になる。</p>
-          <button id="up-clipboard" type="button" class="up-btn accent">クリップボードから保存</button>
-        </div>
-        <div class="up-group">
-          <p class="up-label">テキストで保存(貼り付けて編集する場合)</p>
+          <p class="up-label">テキストで保存</p>
           <input id="up-filename" type="text" class="up-input" placeholder="ファイル名(例: 2026-09-23_仕様書.md)">
-          <textarea id="up-content" class="up-input up-textarea" rows="8" placeholder="AIが作った仕様書・引き継ぎ資料などをここに貼り付け"></textarea>
-          <button id="up-save" type="button" class="up-btn accent">テキストを保存</button>
+          <div class="up-row">
+            <textarea id="up-content" class="up-input up-textarea" rows="8" placeholder="AIが作った仕様書・引き継ぎ資料などをここに貼り付け"></textarea>
+          </div>
+          <div class="up-row">
+            <button id="up-clipboard" type="button" class="up-btn">クリップボードから読み込む</button>
+            <button id="up-save" type="button" class="up-btn accent">テキストを保存</button>
+          </div>
+          <p class="card-body" style="margin:0;">「クリップボードから読み込む」は貼り付け欄に自動で入力するだけ(ChatGPT等の回答をコピーしてから押す)。内容を確認・編集してから「テキストを保存」を押すと確定する。</p>
         </div>
         <div class="up-group">
           <p class="up-label">ファイルで保存</p>
@@ -470,7 +478,7 @@
   </section>
 
   <footer>
-    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応 / クリップボードからワンクリック保存に対応</span>
+    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応 / クリップボードから貼り付け欄への読み込みに対応(保存前に編集可能)</span>
     <button id="copy-btn" type="button">このページのURLをコピー</button>
   </footer>
 
@@ -660,13 +668,10 @@
         if (!text || !text.trim()) {
           throw new Error('クリップボードが空です。先にコピーしてから押してください。');
         }
-        var filename = filenameInput.value.trim() || defaultFilename();
-        setMessage('保存しています…');
-        await ensureFolder();
-        await uploadBlob(filename, 'text/plain; charset=UTF-8', new Blob([text], { type: 'text/plain' }));
         contentInput.value = text;
-        filenameInput.value = defaultFilename();
-        setMessage('クリップボードの内容を「' + filename + '」として Outpost Uploads フォルダに保存しました。');
+        if (!filenameInput.value.trim()) filenameInput.value = defaultFilename();
+        contentInput.focus();
+        setMessage('貼り付け欄に読み込みました。内容を確認・編集してから「テキストを保存」を押してください。');
       } catch (err) {
         setMessage((err && err.message ? err.message : 'クリップボードの読み込みに失敗しました') , true);
       } finally {
