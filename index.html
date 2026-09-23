@@ -170,6 +170,7 @@
   .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
   .card-tag.manual { color: var(--ink-soft); background: var(--surface-2); }
   .card-body { color: var(--ink-soft); font-size: 0.92rem; }
+  .card-body a { color: var(--accent); }
   .path {
     font-family: "JetBrains Mono", monospace;
     font-size: 0.85em;
@@ -428,7 +429,7 @@
       </div>
       <div class="card">
         <div class="card-head"><span class="card-title">常時稼働サーバ</span><span class="card-tag">Raspberry Pi 5 (8GB)</span></div>
-        <div class="card-body">X(Twitter)のいいね収集など、軽量な常駐スクリプトを実行中。</div>
+        <div class="card-body">X(Twitter)の「いいね」を15分おきに自動収集(systemd timer)。Gemini AIで評価・要約し、Notionの「記録_Research INBOX」へ自動投稿する(<a href="#s03">03 参照</a>、🟢判定はIDEA BOXにもコピー)。失敗時はDiscordに通知が飛ぶ。</div>
       </div>
       <div class="card">
         <div class="card-head"><span class="card-title">クラウド開発環境</span><span class="card-tag">Claude Code on the web</span></div>
@@ -574,7 +575,7 @@
   </section>
 
   <footer>
-    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応 / クリップボードから貼り付け欄への読み込みに対応(保存前に編集可能) / 自動ファイル名を「日付_時分.md」に変更 / 横スライドのナビメニューを追加 / アップロード先の説明をOutpost UploadsとBasecampInboxで区別</span>
+    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応 / クリップボードから貼り付け欄への読み込みに対応(保存前に編集可能) / 自動ファイル名を「日付_時分.md」に変更 / 横スライドのナビメニューを追加 / アップロード先の説明をOutpost UploadsとBasecampInboxで区別 / Raspberry Piの実行内容(Gemini評価・Notion自動投稿)を追記</span>
     <button id="copy-btn" type="button">このページのURLをコピー</button>
   </footer>
 
