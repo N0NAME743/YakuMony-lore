@@ -295,6 +295,83 @@
   }
   #copy-btn:active { transform: translateY(1px); }
   #copy-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  #nav-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 30;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    gap: 5px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  #nav-toggle span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--ink);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  #nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  #nav-toggle.open span:nth-child(2) { opacity: 0; }
+  #nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  #nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 12, 11, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 20;
+  }
+  #nav-overlay.open { opacity: 1; pointer-events: auto; }
+
+  #nav-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: min(280px, 82vw);
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    z-index: 25;
+    overflow-y: auto;
+    padding: 72px 0 24px;
+  }
+  #nav-drawer.open { transform: translateX(0); }
+  .nav-link {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 13px 20px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 0.92rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-link:hover, .nav-link:focus-visible { background: var(--surface-2); }
+  .nav-link .num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+  }
+  .nav-link.nav-top {
+    color: var(--accent-ink);
+    font-weight: 700;
+    background: var(--accent-soft);
+  }
+
   @media (max-width: 480px) {
     .card-head { flex-direction: column; align-items: flex-start; }
   }
@@ -302,7 +379,22 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap">
 </head>
 <body>
-<div class="wrap">
+<button id="nav-toggle" type="button" aria-label="メニューを開く" aria-controls="nav-drawer" aria-expanded="false">
+  <span></span><span></span><span></span>
+</button>
+<div id="nav-overlay"></div>
+<nav id="nav-drawer" aria-label="ページ内ナビゲーション">
+  <a href="#top" class="nav-link nav-top">↑ トップへ</a>
+  <a href="#s01" class="nav-link"><span class="num">01</span>デバイス・実行環境</a>
+  <a href="#s02" class="nav-link"><span class="num">02</span>主なプロジェクト</a>
+  <a href="#s03" class="nav-link"><span class="num">03</span>Notion INBOXパイプライン</a>
+  <a href="#s04" class="nav-link"><span class="num">04</span>アップロード先</a>
+  <a href="#s05" class="nav-link"><span class="num">05</span>運用ルール</a>
+  <a href="#s06" class="nav-link"><span class="num">06</span>このページの使い方</a>
+  <a href="#s07" class="nav-link"><span class="num">07</span>AIへの指示</a>
+</nav>
+
+<div class="wrap" id="top">
 
   <header class="masthead">
     <p class="eyebrow">Context Primer — 公開版・読み込み用ドキュメント</p>
@@ -327,7 +419,7 @@
     </ul>
   </div>
 
-  <section class="block">
+  <section class="block" id="s01">
     <div class="block-head"><span class="num">01</span><h2>デバイス・実行環境</h2></div>
     <div class="cards">
       <div class="card">
@@ -353,7 +445,7 @@
     </div>
   </section>
 
-  <section class="block">
+  <section class="block" id="s02">
     <div class="block-head"><span class="num">02</span><h2>主なプロジェクト</h2></div>
     <p class="lede" style="margin-bottom:16px;">タグは状態を示す(本番稼働 / 開発中 / 個人利用 / 受託案件 / 実験環境のほか、保留・停止もある)。</p>
     <div class="cards">
@@ -380,7 +472,7 @@
     </div>
   </section>
 
-  <section class="block">
+  <section class="block" id="s03">
     <div class="block-head"><span class="num">03</span><h2>Notion INBOXパイプライン</h2></div>
     <p class="lede" style="margin-bottom:16px;">development リポジトリとは別に、Notion 側で「集めて→精査して→公開する」ための情報整理パイプラインが稼働中。各DBに「AI自動」「手動」のタグを付けている。</p>
     <div class="cards">
@@ -408,7 +500,7 @@
     <p class="mono" style="font-size:0.78rem; color:var(--muted); margin-top:14px;">Research INBOX(AI自動) → AI査定・裏取り(AI自動) → IDEA BOX(AI自動) → 公開サイト</p>
   </section>
 
-  <section class="block">
+  <section class="block" id="s04">
     <div class="block-head"><span class="num">04</span><h2>アップロード先</h2></div>
     <p class="lede" style="margin-bottom:16px;">仕様書・引き継ぎ資料などをこの場で作ってもらった場合、そのまま渡せる置き場が Google Drive にある。</p>
     <div class="cards">
@@ -448,7 +540,7 @@
     </div>
   </section>
 
-  <section class="block">
+  <section class="block" id="s05">
     <div class="block-head"><span class="num">05</span><h2>運用ルール</h2></div>
     <ul class="rule-list">
       <li><b>フォルダ命名:</b> 新設フォルダは英語 snake_case に統一</li>
@@ -457,7 +549,7 @@
     </ul>
   </section>
 
-  <section class="block howto">
+  <section class="block howto" id="s06">
     <div class="block-head"><span class="num">06</span><h2>このページの使い方</h2></div>
     <ol>
       <li>ChatGPT / Gemini など、他のAIサービスで新しい相談を始めるとき、まず<b>このリンクを渡す</b>(このページは公開HTMLなので、AIの自動読み込みにも対応している)</li>
@@ -467,7 +559,7 @@
     </ol>
   </section>
 
-  <section class="block">
+  <section class="block" id="s07">
     <div class="block-head"><span class="num">07</span><h2>AIへの指示</h2></div>
     <ul class="rule-list">
       <li>情報が競合したら<b>「実際のコード/設定 &gt; 非公開の詳細仕様 &gt; このページ &gt; AIの推測」</b>の順で優先する</li>
@@ -478,7 +570,7 @@
   </section>
 
   <footer>
-    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応 / クリップボードから貼り付け欄への読み込みに対応(保存前に編集可能) / 自動ファイル名を「日付_時分.md」に変更</span>
+    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応 / クリップボードから貼り付け欄への読み込みに対応(保存前に編集可能) / 自動ファイル名を「日付_時分.md」に変更 / 横スライドのナビメニューを追加</span>
     <button id="copy-btn" type="button">このページのURLをコピー</button>
   </footer>
 
@@ -498,6 +590,33 @@
       } else {
         done(false);
       }
+    });
+  })();
+</script>
+
+<script>
+  (function () {
+    var toggle = document.getElementById('nav-toggle');
+    var drawer = document.getElementById('nav-drawer');
+    var overlay = document.getElementById('nav-overlay');
+    if (!toggle || !drawer || !overlay) return;
+
+    function setOpen(open) {
+      toggle.classList.toggle('open', open);
+      drawer.classList.toggle('open', open);
+      overlay.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    toggle.addEventListener('click', function () {
+      setOpen(!drawer.classList.contains('open'));
+    });
+    overlay.addEventListener('click', function () { setOpen(false); });
+    drawer.querySelectorAll('.nav-link').forEach(function (a) {
+      a.addEventListener('click', function () { setOpen(false); });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') setOpen(false);
     });
   })();
 </script>
