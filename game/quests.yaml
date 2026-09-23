@@ -13,7 +13,7 @@ quests:
         done: true
       - text: Achievementデータモデルを作成
         done: true
-      - text: Web画面にKEN10を表示
+      - text: Web画面にKE10を表示
         done: true
     rewards:
       exp: 100
