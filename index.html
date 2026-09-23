@@ -272,10 +272,10 @@
     <div class="cards">
       <div class="card">
         <div class="card-head"><span class="card-title">ふだんの開発機</span><span class="card-tag">Windows + VSCode</span></div>
-        <div class="card-body">Claude Code を Dev Container(Ubuntu 24.04 ベース / Node.js 18)で使用。</div>
+        <div class="card-body">Claude Code を Dev Container(Ubuntu 24.04 ベース / Node.js 18)で使用。GPU: RTX 3060 12GB / RAM: 32GB(ローカルAI実行も可能な構成)。</div>
       </div>
       <div class="card">
-        <div class="card-head"><span class="card-title">常時稼働サーバ</span><span class="card-tag">Raspberry Pi</span></div>
+        <div class="card-head"><span class="card-title">常時稼働サーバ</span><span class="card-tag">Raspberry Pi 5 (8GB)</span></div>
         <div class="card-body">X(Twitter)のいいね収集など、軽量な常駐スクリプトを実行中。</div>
       </div>
       <div class="card">
@@ -285,6 +285,10 @@
       <div class="card">
         <div class="card-head"><span class="card-title">外出先</span><span class="card-tag">スマホ / タブレット</span></div>
         <div class="card-body">メモ・下書き程度。コーディング作業はできない前提。</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">主要技術スタック</span></div>
+        <div class="card-body">Python / Node.js / Docker / Git・GitHub / VSCode / Notion API / Google APIs</div>
       </div>
     </div>
   </section>
@@ -359,6 +363,7 @@
     <div class="block-head"><span class="num">05</span><h2>運用ルール</h2></div>
     <ul class="rule-list">
       <li><b>フォルダ命名:</b> 新設フォルダは英語 snake_case に統一</li>
+      <li><b>言語:</b> 会話・仕様書は日本語、コード・変数名・新規ディレクトリ名は英語</li>
       <li class="warn"><b>機密情報厳禁:</b> APIキー・トークン・個人を特定できる情報は、コード/ドキュメント/このページのどこにも書かない</li>
     </ul>
   </section>
@@ -373,8 +378,18 @@
     </ol>
   </section>
 
+  <section class="block">
+    <div class="block-head"><span class="num">07</span><h2>AIへの指示</h2></div>
+    <ul class="rule-list">
+      <li>情報が競合したら<b>「実際のコード/設定 &gt; 非公開の詳細仕様 &gt; このページ &gt; AIの推測」</b>の順で優先する</li>
+      <li>作業対象プロジェクトを指定されたら、まずそのディレクトリの README・spec・設定ファイルを確認してから提案する</li>
+      <li class="warn"><b>Project_YAKUMO など本番稼働中のシステム</b>に対し、停止・削除・DB変更・認証変更などの不可逆操作は、明示的な確認なしに行わない</li>
+      <li>基本ブランチは <span class="path">main</span>。コミット/push を AI 自身が実行してよいかは、その都度人に確認する</li>
+    </ul>
+  </section>
+
   <footer>
-    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加</span>
+    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加</span>
     <button id="copy-btn" type="button">このページのURLをコピー</button>
   </footer>
 
