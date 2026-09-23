@@ -201,6 +201,43 @@
     font-weight: 600;
   }
   .rule-list li.warn b { color: var(--warn); }
+
+  .uploader {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 10px;
+  }
+  .up-btn {
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 100px;
+    padding: 9px 18px;
+    cursor: pointer;
+  }
+  .up-btn.accent { color: var(--accent-ink); background: var(--accent-soft); }
+  .up-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .up-btn:disabled { opacity: 0.5; cursor: default; }
+  #up-form { display: grid; gap: 10px; margin-top: 12px; }
+  .up-input {
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--ink);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 9px 12px;
+    width: 100%;
+  }
+  .up-textarea {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.82rem;
+    resize: vertical;
+    line-height: 1.6;
+  }
   .howto ol {
     margin: 0;
     padding-inline-start: 1.3em;
@@ -358,6 +395,21 @@
         <div class="card-body">作成した資料(仕様書・引き継ぎメモ・コード等)は、テキストとして出力してもらえれば、こちらでこのフォルダに保存する。フォルダへの直接リンクはこのページには載せていない(保存は本人が行う)。</div>
       </div>
     </div>
+
+    <div class="uploader">
+      <div class="card-head">
+        <span class="card-title">このページから直接保存</span>
+        <span id="up-status" class="card-tag manual" hidden></span>
+      </div>
+      <p class="card-body" style="margin-bottom:12px;">Googleでログインすると、今開いているブラウザから直接 <span class="path">Outpost Uploads</span> フォルダ(このページ専用の新規フォルダ)へ保存できる。</p>
+      <button id="up-signin" type="button" class="up-btn accent">Googleでログイン</button>
+      <div id="up-form" hidden>
+        <input id="up-filename" type="text" class="up-input" placeholder="ファイル名(例: 2026-09-23_仕様書.md)">
+        <textarea id="up-content" class="up-input up-textarea" rows="8" placeholder="AIが作った仕様書・引き継ぎ資料などをここに貼り付け"></textarea>
+        <button id="up-save" type="button" class="up-btn accent">Driveに保存</button>
+      </div>
+      <p id="up-message" class="mono" style="font-size:0.8rem; margin-top:10px; color:var(--muted);"></p>
+    </div>
   </section>
 
   <section class="block">
@@ -390,7 +442,7 @@
   </section>
 
   <footer>
-    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張</span>
+    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加</span>
     <button id="copy-btn" type="button">このページのURLをコピー</button>
   </footer>
 
@@ -409,6 +461,136 @@
         navigator.clipboard.writeText(url).then(function () { done(true); }, function () { done(false); });
       } else {
         done(false);
+      }
+    });
+  })();
+</script>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+  (function () {
+    var CLIENT_ID = '126747893186-ti33lej5p5uk1ks0famdtqe08phdih99.apps.googleusercontent.com';
+    var SCOPE = 'https://www.googleapis.com/auth/drive.file';
+    var FOLDER_STORAGE_KEY = 'outpost_drive_folder_id';
+
+    var signinBtn = document.getElementById('up-signin');
+    var form = document.getElementById('up-form');
+    var filenameInput = document.getElementById('up-filename');
+    var contentInput = document.getElementById('up-content');
+    var saveBtn = document.getElementById('up-save');
+    var statusEl = document.getElementById('up-status');
+    var messageEl = document.getElementById('up-message');
+    if (!signinBtn) return;
+
+    var tokenClient = null;
+    var accessToken = null;
+    var folderId = null;
+
+    function setMessage(text, isError) {
+      messageEl.textContent = text || '';
+      messageEl.style.color = isError ? 'var(--warn)' : 'var(--muted)';
+    }
+
+    function readSavedFolderId() {
+      try { return localStorage.getItem(FOLDER_STORAGE_KEY); } catch (e) { return null; }
+    }
+    function saveFolderId(id) {
+      try { localStorage.setItem(FOLDER_STORAGE_KEY, id); } catch (e) { /* ignore */ }
+    }
+
+    function onSignedIn() {
+      statusEl.textContent = 'ログイン中';
+      statusEl.hidden = false;
+      signinBtn.hidden = true;
+      form.hidden = false;
+      var d = new Date();
+      var pad = function (n) { return String(n).padStart(2, '0'); };
+      filenameInput.value = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + '_資料.md';
+      setMessage('');
+    }
+
+    function initTokenClient() {
+      if (tokenClient || !window.google || !google.accounts) return;
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: SCOPE,
+        callback: function (resp) {
+          if (resp.error) {
+            setMessage('ログインに失敗しました: ' + resp.error, true);
+            return;
+          }
+          accessToken = resp.access_token;
+          onSignedIn();
+        }
+      });
+    }
+
+    signinBtn.addEventListener('click', function () {
+      initTokenClient();
+      if (!tokenClient) {
+        setMessage('Googleのログイン機能を読み込み中です。数秒後にもう一度押してください。', true);
+        return;
+      }
+      tokenClient.requestAccessToken();
+    });
+
+    async function ensureFolder() {
+      var saved = readSavedFolderId();
+      if (saved) { folderId = saved; return; }
+      var res = await fetch('https://www.googleapis.com/drive/v3/files', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + accessToken,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: 'Outpost Uploads', mimeType: 'application/vnd.google-apps.folder' })
+      });
+      if (!res.ok) throw new Error('フォルダ作成に失敗 (HTTP ' + res.status + ')');
+      var data = await res.json();
+      folderId = data.id;
+      saveFolderId(folderId);
+    }
+
+    async function uploadFile(filename, content) {
+      var metadata = { name: filename, parents: [folderId] };
+      var boundary = 'outpost-boundary-' + Date.now();
+      var body =
+        '--' + boundary + '\r\n' +
+        'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+        JSON.stringify(metadata) + '\r\n' +
+        '--' + boundary + '\r\n' +
+        'Content-Type: text/plain; charset=UTF-8\r\n\r\n' +
+        content + '\r\n' +
+        '--' + boundary + '--';
+      var res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + accessToken,
+          'Content-Type': 'multipart/related; boundary=' + boundary
+        },
+        body: body
+      });
+      if (!res.ok) throw new Error('アップロードに失敗 (HTTP ' + res.status + ')');
+      return res.json();
+    }
+
+    saveBtn.addEventListener('click', async function () {
+      var filename = filenameInput.value.trim();
+      var content = contentInput.value;
+      if (!filename) { setMessage('ファイル名を入力してください', true); return; }
+      if (!content.trim()) { setMessage('内容を貼り付けてください', true); return; }
+
+      saveBtn.disabled = true;
+      setMessage('保存しています…');
+      try {
+        await ensureFolder();
+        await uploadFile(filename, content);
+        setMessage('「' + filename + '」を Outpost Uploads フォルダに保存しました。');
+        contentInput.value = '';
+      } catch (err) {
+        setMessage('保存に失敗しました: ' + (err && err.message ? err.message : err), true);
+      } finally {
+        saveBtn.disabled = false;
       }
     });
   })();
