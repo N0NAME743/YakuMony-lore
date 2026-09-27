@@ -404,17 +404,17 @@
     <p class="lede">ChatGPT / Gemini など、別のAIサービスとの相談を始めるときに渡すための前提情報です。デバイス構成・稼働中のプロジェクト・運用ルールを、公開して差し支えない範囲でまとめています。</p>
     <p class="lede">※このページはYAKUMOのキャラクター設定書ではありません。YAKUMOはN0NAMEが運用するキャラクターIPで、X自動投稿システムはその運用手段の一つです。キャラクター設定そのものは別資料で管理しています。</p>
     <div class="meta-row">
-      <span class="pill accent">最終更新 2026-09-23</span>
+      <span class="pill accent">最終更新 2026-09-27</span>
       <span class="pill">個人開発 / ソロ運用</span>
-      <span class="pill">完全公開ページ(bot読み込み可)</span>
+      <span class="pill">完全公開ページ(AIとの共有用)</span>
     </div>
   </header>
 
   <div class="callout">
     <h2>最短で伝えたいこと</h2>
     <ul>
-      <li><b>拠点は GitHub の development リポジトリ</b> ひとつ。複数プロジェクトをフォルダで分けて運用</li>
-      <li><b>本番稼働中のもの</b>は YAKUMO の X 自動投稿システムのみ。他は開発中/実験中</li>
+      <li><b>拠点は GitHub の development リポジトリ</b>。プロジェクトは <span class="path">projects/</span>、継続活動は <span class="path">activities/</span> に分けて運用</li>
+      <li><b>外部向けの本番システム</b>は YAKUMO の X 自動投稿システム。Raspberry Pi では別に個人用の調査パイプラインが稼働中</li>
       <li><b>Notion に別のパイプライン</b>(リサーチ→裏取り→IDEA BOX→公開サイト)が動いている</li>
       <li>作成した資料は Google Drive の受け箱フォルダに保存する運用</li>
       <li>個別プロジェクトの深い話が必要なら、別途詳細を渡す</li>
@@ -426,7 +426,7 @@
     <div class="cards">
       <div class="card">
         <div class="card-head"><span class="card-title">ふだんの開発機</span><span class="card-tag">Windows + VSCode</span></div>
-        <div class="card-body">Claude Code を Dev Container(Ubuntu 24.04 ベース / Node.js 18)で使用。GPU: RTX 3060 12GB / RAM: 32GB(ローカルAI実行も可能な構成)。</div>
+        <div class="card-body">Claude Code を共通 Dev Container(Ubuntu 24.04 / Node.js 24 LTS)で使用。GitHub SSH、Tailscale、共有ツールもこの環境から利用する。PC: RTX 3060 12GB / RAM: 32GB。</div>
       </div>
       <div class="card">
         <div class="card-head"><span class="card-title">常時稼働サーバ</span><span class="card-tag">Raspberry Pi 5 (8GB)</span></div>
@@ -452,16 +452,20 @@
     <p class="lede" style="margin-bottom:16px;">タグは状態を示す(本番稼働 / 開発中 / 個人利用 / 受託案件 / 実験環境のほか、保留・停止もある)。</p>
     <div class="cards">
       <div class="card">
-        <div class="card-head"><span class="card-title"><span class="path">Project_YAKUMO/</span></span><span class="card-tag">本番稼働</span></div>
+        <div class="card-head"><span class="card-title"><span class="path">projects/Project_YAKUMO/</span></span><span class="card-tag">本番稼働</span></div>
         <div class="card-body">キャラクターIP「YAKUMO」の運用。Notion → AI変換 → 人による承認 → X投稿 まで自動化された本番システム。</div>
       </div>
       <div class="card">
-        <div class="card-head"><span class="card-title"><span class="path">investment/</span></span><span class="card-tag">個人利用</span></div>
-        <div class="card-body">銘柄分析用の Python スクリプト群。</div>
+        <div class="card-head"><span class="card-title"><span class="path">activities/investment/</span></span><span class="card-tag">個人利用</span></div>
+        <div class="card-body">銘柄分析用の Python スクリプト群。Development リポジトリの <span class="path">activities/</span> で管理。</div>
       </div>
       <div class="card">
-        <div class="card-head"><span class="card-title"><span class="path">apps/xcrawler/</span></span><span class="card-tag">開発中</span></div>
+        <div class="card-head"><span class="card-title"><span class="path">projects/xcrawler/</span></span><span class="card-tag">開発中</span></div>
         <div class="card-body">クローラー系の Web アプリ。</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title"><span class="path">projects/image-library-manager/</span></span><span class="card-tag">開発中</span></div>
+        <div class="card-body">画像ライブラリを管理するアプリ。</div>
       </div>
       <div class="card">
         <div class="card-head"><span class="card-title"><span class="path">clients/</span></span><span class="card-tag">受託案件</span></div>
@@ -469,7 +473,7 @@
       </div>
       <div class="card">
         <div class="card-head"><span class="card-title"><span class="path">claude_skill_lab/</span></span><span class="card-tag">実験環境</span></div>
-        <div class="card-body">Claude Code 関連の検証用スペース。</div>
+        <div class="card-body">Claude Code 関連の検証用スペース。共通設定はリポジトリ直下の <span class="path">.devcontainer/</span> と <span class="path">tools/</span> で管理。</div>
       </div>
     </div>
   </section>
@@ -504,11 +508,11 @@
 
   <section class="block" id="s04">
     <div class="block-head"><span class="num">04</span><h2>アップロード先</h2></div>
-    <p class="lede" style="margin-bottom:16px;">仕様書・引き継ぎ資料などをこの場で作ってもらった場合、そのまま渡せる置き場が Google Drive にある。経路が違っても、保存先は<b>「Outpost Uploads」1つに統一</b>している。</p>
+    <p class="lede" style="margin-bottom:16px;">仕様書・引き継ぎ資料などを Google Drive の「Outpost Uploads」へ保存する。下のページ内保存機能は、ブラウザごとに使用するフォルダを記憶する。</p>
     <div class="cards">
       <div class="card">
         <div class="card-head"><span class="card-title">Google Drive「Outpost Uploads」</span><span class="card-tag">受け箱</span></div>
-        <div class="card-body">下の「このページから直接保存」機能でログインすればブラウザから直接、あるいは Claude Code セッションに「保存しておいて」と頼んでも、どちらも同じこのフォルダに保存される。フォルダへの直接リンクはこのページには載せていない(保存は本人が行う)。</div>
+        <div class="card-body">このページから保存すると、ログイン中のGoogleアカウントのDriveに「Outpost Uploads」フォルダを作成して使う。別のブラウザやサイトデータを消した後は別フォルダが作られる場合があるため、Claude Codeなど別経路から保存するときは保存先を確認する。</div>
       </div>
     </div>
 
@@ -517,7 +521,7 @@
         <span class="card-title">このページから直接保存</span>
         <span id="up-status" class="card-tag manual" hidden></span>
       </div>
-      <p class="card-body" style="margin-bottom:12px;">Googleでログインすると、今開いているブラウザから直接 <span class="path">Outpost Uploads</span> フォルダ(このページ専用の新規フォルダ)へ保存できる。</p>
+      <p class="card-body" style="margin-bottom:12px;">Googleでログインすると、このブラウザ用の <span class="path">Outpost Uploads</span> フォルダへ保存できる。フォルダIDはブラウザに保存され、同じブラウザでは次回も再利用される。</p>
       <button id="up-signin" type="button" class="up-btn accent">Googleでログイン</button>
       <div id="up-form" hidden>
         <div class="up-group">
@@ -554,7 +558,7 @@
   <section class="block howto" id="s06">
     <div class="block-head"><span class="num">06</span><h2>このページの使い方</h2></div>
     <ol>
-      <li>ChatGPT / Gemini など、他のAIサービスで新しい相談を始めるとき、まず<b>このリンクを渡す</b>(このページは公開HTMLなので、AIの自動読み込みにも対応している)</li>
+      <li>ChatGPT / Gemini などで相談を始めるとき、このページのURLを渡す。URL読み込みに対応していないサービスでは、本文を貼り付けるかHTMLを添付する</li>
       <li>仕様書・引き継ぎ資料などを作ってもらったら、コピーできる形(テキスト/Markdown等)で出力してもらう。保存自体は本人が「04 アップロード先」に対応する場所へ行う</li>
       <li>環境やプロジェクト構成が変わったら、Claude Code セッションでこのページの更新を依頼する。内容の最終確認は本人が行う</li>
       <li>Claude Code 向けの、より詳しい実務情報は別の非公開ページに置いている</li>
@@ -572,7 +576,7 @@
   </section>
 
   <footer>
-    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応 / クリップボードから貼り付け欄への読み込みに対応(保存前に編集可能) / 自動ファイル名を「日付_時分.md」に変更 / 横スライドのナビメニューを追加 / アップロード先の説明をOutpost UploadsとBasecampInboxで区別 / Raspberry Piの実行内容(Gemini評価・Notion自動投稿)を追記 / Drive保存先をOutpost Uploads 1つに統一 / IDEA BOXカードに公開サイト(Field Notes)へのリンクを追加</span>
+    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応 / クリップボードから貼り付け欄への読み込みに対応(保存前に編集可能) / 自動ファイル名を「日付_時分.md」に変更 / 横スライドのナビメニューを追加 / アップロード先の説明をOutpost UploadsとBasecampInboxで区別 / Raspberry Piの実行内容(Gemini評価・Notion自動投稿)を追記 / ページ内のDrive保存先をOutpost Uploadsに設定 / IDEA BOXカードに公開サイト(Field Notes)へのリンクを追加 / DevelopmentのNode.jsとフォルダ構成を現状に更新 / Drive保存機能のブラウザ別フォルダ動作を明記 / AIサービスのURL読み込み可否に関する説明を更新</span>
     <button id="copy-btn" type="button">このページのURLをコピー</button>
   </footer>
 
