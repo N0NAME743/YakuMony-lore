@@ -414,7 +414,7 @@
     <h2>最短で伝えたいこと</h2>
     <ul>
       <li><b>拠点は GitHub の development リポジトリ</b>。プロジェクトは <span class="path">projects/</span>、継続活動は <span class="path">activities/</span> に分けて運用</li>
-      <li><b>外部向けの本番システム</b>は YAKUMO の X 自動投稿システム。Raspberry Pi では別に個人用の調査パイプラインが稼働中</li>
+      <li><b>外部向けの本番システム</b>は YAKUMO の X 自動投稿システム（2026-10-01時点、作り込みのため一時停止中）。Raspberry Pi では別に個人用の調査パイプラインが稼働中</li>
       <li><b>Notion に別のパイプライン</b>(リサーチ/IDEA BOXへ排他振り分け→裏取り→Obsidian取り込み→公開サイト)が動いている</li>
       <li>作成した資料は Google Drive の受け箱フォルダに保存する運用</li>
       <li>個別プロジェクトの深い話が必要なら、別途詳細を渡す</li>
@@ -452,8 +452,8 @@
     <p class="lede" style="margin-bottom:16px;">タグは状態を示す(本番稼働 / 開発中 / 個人利用 / 受託案件 / 実験環境のほか、保留・停止もある)。</p>
     <div class="cards">
       <div class="card">
-        <div class="card-head"><span class="card-title"><span class="path">projects/Project_YAKUMO/</span></span><span class="card-tag">本番稼働</span></div>
-        <div class="card-body">キャラクターIP「YAKUMO」の運用。Notion → AI変換 → 人による承認 → X投稿 まで自動化された本番システム。</div>
+        <div class="card-head"><span class="card-title"><span class="path">projects/Project_YAKUMO/</span></span><span class="card-tag manual">一時停止中</span></div>
+        <div class="card-body">キャラクターIP「YAKUMO」の運用。Notion → AI変換 → 人による承認 → X投稿 まで自動化された本番システムだったが、作り込みが必要になったため2026-10-01にRaspberry Pi側の常駐サービス(discord_daemon)・定期実行timer(poll-inbox / github-trending / process-queue)をすべて停止・無効化済み。コード・DBはそのまま残しており、再開時は各systemdユニットを有効化するだけで戻せる。</div>
       </div>
       <div class="card">
         <div class="card-head"><span class="card-title"><span class="path">activities/investment/</span></span><span class="card-tag">個人利用</span></div>
@@ -584,7 +584,7 @@
   </section>
 
   <footer>
-    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応 / クリップボードから貼り付け欄への読み込みに対応(保存前に編集可能) / 自動ファイル名を「日付_時分.md」に変更 / 横スライドのナビメニューを追加 / アップロード先の説明をOutpost UploadsとBasecampInboxで区別 / Raspberry Piの実行内容(Gemini評価・Notion自動投稿)を追記 / ページ内のDrive保存先をOutpost Uploadsに設定 / IDEA BOXカードに公開サイト(Field Notes)へのリンクを追加 / DevelopmentのNode.jsとフォルダ構成を現状に更新 / Drive保存機能のブラウザ別フォルダ動作を明記 / AIサービスのURL読み込み可否に関する説明を更新 / AI Work Hubを開発中プロジェクトに追加 / Notionパイプラインを排他振り分け方式に変更し、IDEA BOXからObsidian(PKG)への取り込み経路と裏取り検証のPi移行を反映</span>
+    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応 / クリップボードから貼り付け欄への読み込みに対応(保存前に編集可能) / 自動ファイル名を「日付_時分.md」に変更 / 横スライドのナビメニューを追加 / アップロード先の説明をOutpost UploadsとBasecampInboxで区別 / Raspberry Piの実行内容(Gemini評価・Notion自動投稿)を追記 / ページ内のDrive保存先をOutpost Uploadsに設定 / IDEA BOXカードに公開サイト(Field Notes)へのリンクを追加 / DevelopmentのNode.jsとフォルダ構成を現状に更新 / Drive保存機能のブラウザ別フォルダ動作を明記 / AIサービスのURL読み込み可否に関する説明を更新 / AI Work Hubを開発中プロジェクトに追加 / Notionパイプラインを排他振り分け方式に変更し、IDEA BOXからObsidian(PKG)への取り込み経路と裏取り検証のPi移行を反映 / YAKUMO X自動投稿システムを一時停止(2026-10-01、作り込みのためdiscord_daemon・各timerをRaspberry Pi上で停止・無効化)</span>
     <button id="copy-btn" type="button">このページのURLをコピー</button>
   </footer>
 
