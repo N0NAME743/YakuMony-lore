@@ -404,7 +404,7 @@
     <p class="lede">ChatGPT / Gemini など、別のAIサービスとの相談を始めるときに渡すための前提情報です。デバイス構成・稼働中のプロジェクト・運用ルールを、公開して差し支えない範囲でまとめています。</p>
     <p class="lede">※このページはYAKUMOのキャラクター設定書ではありません。YAKUMOはN0NAMEが運用するキャラクターIPで、X自動投稿システムはその運用手段の一つです。キャラクター設定そのものは別資料で管理しています。</p>
     <div class="meta-row">
-      <span class="pill accent">最終更新 2026-09-27</span>
+      <span class="pill accent">最終更新 2026-10-01</span>
       <span class="pill">個人開発 / ソロ運用</span>
       <span class="pill">完全公開ページ(AIとの共有用)</span>
     </div>
@@ -415,7 +415,7 @@
     <ul>
       <li><b>拠点は GitHub の development リポジトリ</b>。プロジェクトは <span class="path">projects/</span>、継続活動は <span class="path">activities/</span> に分けて運用</li>
       <li><b>外部向けの本番システム</b>は YAKUMO の X 自動投稿システム。Raspberry Pi では別に個人用の調査パイプラインが稼働中</li>
-      <li><b>Notion に別のパイプライン</b>(リサーチ→裏取り→IDEA BOX→公開サイト)が動いている</li>
+      <li><b>Notion に別のパイプライン</b>(リサーチ/IDEA BOXへ排他振り分け→裏取り→Obsidian取り込み→公開サイト)が動いている</li>
       <li>作成した資料は Google Drive の受け箱フォルダに保存する運用</li>
       <li>個別プロジェクトの深い話が必要なら、別途詳細を渡す</li>
     </ul>
@@ -430,7 +430,7 @@
       </div>
       <div class="card">
         <div class="card-head"><span class="card-title">常時稼働サーバ</span><span class="card-tag">Raspberry Pi 5 (8GB)</span></div>
-        <div class="card-body">X(Twitter)の「いいね」を15分おきに自動収集(systemd timer)。Gemini AIで評価・要約し、Notionの「記録_Research INBOX」へ自動投稿する(<a href="#s03">03 参照</a>、🟢判定はIDEA BOXにもコピー)。失敗時はDiscordに通知が飛ぶ。</div>
+        <div class="card-body">X(Twitter)の「いいね」を15分おきに自動収集(systemd timer)。Gemini AIで評価・要約し、判定結果に応じて「記録_Research INBOX」か「IDEA BOX」のどちらか一方へ自動投稿する(<a href="#s03">03 参照</a>、重複保存は廃止し排他振り分けに変更)。IDEA BOX側の高評価項目はClaude APIのWeb検索機能で自動の裏取り検証も行う。失敗時はDiscordに通知が飛ぶ。</div>
       </div>
       <div class="card">
         <div class="card-head"><span class="card-title">クラウド開発環境</span><span class="card-tag">Claude Code on the web</span></div>
@@ -500,14 +500,18 @@
       </div>
       <div class="card">
         <div class="card-head"><span class="card-title">記録_裏取りレポート・根拠</span><span class="card-tags"><span class="card-tag">AI自動</span></span></div>
-        <div class="card-body">Research INBOX の内容をAIが検証し、判定結果を自動で記録する。</div>
+        <div class="card-body">IDEA BOX の高評価項目をClaude API(Web検索/Web取得)が自動で裏取り検証し、判定結果と根拠を記録する。Raspberry Pi上で日次実行(旧: クラウド側のスケジュール実行から移行済み)。</div>
       </div>
       <div class="card">
         <div class="card-head"><span class="card-title">IDEA BOX</span><span class="card-tags"><span class="card-tag">AI自動</span></span></div>
-        <div class="card-body">裏取りを終えた知見の最終置き場。要約・評価まで AI が自動生成する。<a href="https://idea-box-fieldnotes.ailab-yakumo89.workers.dev/" target="_blank" rel="noopener">公開サイト(IDEA BOX — Field Notes)</a> の元ネタになる。</div>
+        <div class="card-body">要約・評価まで AI が自動生成する知見の置き場。<a href="https://idea-box-fieldnotes.ailab-yakumo89.workers.dev/" target="_blank" rel="noopener">公開サイト(IDEA BOX — Field Notes)</a> の元ネタになるほか、人が承認したものはPKG経由でObsidian本体Vaultへも取り込まれる。</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">Obsidian連携(PKG)</span><span class="card-tags"><span class="card-tag">AI自動</span><span class="card-tag manual">手動承認</span></span></div>
+        <div class="card-body">Google Driveの記事、およびNotion IDEA BOXで「取込依頼」にした項目を、PKGateway(/opt/pkgateway)が内容変更チェック・秘密情報検出などの安全装置つきで検証し、Obsidian本体Vaultへ取り込む。</div>
       </div>
     </div>
-    <p class="mono" style="font-size:0.78rem; color:var(--muted); margin-top:14px;">Research INBOX(AI自動) → AI査定・裏取り(AI自動) → IDEA BOX(AI自動) → 公開サイト</p>
+    <p class="mono" style="font-size:0.78rem; color:var(--muted); margin-top:14px;">X投稿 → AI査定で排他振り分け → Research INBOX / IDEA BOX(AI自動) → IDEA BOX高評価分は裏取り検証(AI自動) → 承認分はPKG経由でObsidianへ取込 / 公開サイトへ掲載</p>
   </section>
 
   <section class="block" id="s04">
@@ -580,7 +584,7 @@
   </section>
 
   <footer>
-    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応 / クリップボードから貼り付け欄への読み込みに対応(保存前に編集可能) / 自動ファイル名を「日付_時分.md」に変更 / 横スライドのナビメニューを追加 / アップロード先の説明をOutpost UploadsとBasecampInboxで区別 / Raspberry Piの実行内容(Gemini評価・Notion自動投稿)を追記 / ページ内のDrive保存先をOutpost Uploadsに設定 / IDEA BOXカードに公開サイト(Field Notes)へのリンクを追加 / DevelopmentのNode.jsとフォルダ構成を現状に更新 / Drive保存機能のブラウザ別フォルダ動作を明記 / AIサービスのURL読み込み可否に関する説明を更新 / AI Work Hubを開発中プロジェクトに追加</span>
+    <span class="log">更新履歴: 2026-09-23 初版作成(GitHub Pages版) / YAKUMOの位置づけ・プロジェクト状態タグの説明を追加 / スペック・技術スタック・「07 AIへの指示」を追加 / カタカナ語の途中改行を防止 / 本文の幅を960pxに拡張 / ページから直接Driveへ保存できる機能を追加 / ファイル(写真・PDF等)のアップロードに対応 / クリップボードから貼り付け欄への読み込みに対応(保存前に編集可能) / 自動ファイル名を「日付_時分.md」に変更 / 横スライドのナビメニューを追加 / アップロード先の説明をOutpost UploadsとBasecampInboxで区別 / Raspberry Piの実行内容(Gemini評価・Notion自動投稿)を追記 / ページ内のDrive保存先をOutpost Uploadsに設定 / IDEA BOXカードに公開サイト(Field Notes)へのリンクを追加 / DevelopmentのNode.jsとフォルダ構成を現状に更新 / Drive保存機能のブラウザ別フォルダ動作を明記 / AIサービスのURL読み込み可否に関する説明を更新 / AI Work Hubを開発中プロジェクトに追加 / Notionパイプラインを排他振り分け方式に変更し、IDEA BOXからObsidian(PKG)への取り込み経路と裏取り検証のPi移行を反映</span>
     <button id="copy-btn" type="button">このページのURLをコピー</button>
   </footer>
 
